@@ -4,135 +4,42 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#f5f5f3" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)" />
   <title>마린시티 식당 제비뽑기</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg:    #ffffff; --bg2:   #f5f5f3; --bg3:   #eeede8;
-      --text:  #1a1a1a; --text2: #6b6b6b;
-      --bd:    rgba(0,0,0,0.11); --bd2: rgba(0,0,0,0.2);
-      --r-md:  8px; --r-lg: 14px;
-      --accent: #E24B4A;
+      --bg:#ffffff; --bg2:#f5f5f3; --bg3:#eeede8;
+      --text:#1a1a1a; --text2:#6b6b6b;
+      --bd:rgba(0,0,0,0.10); --bd2:rgba(0,0,0,0.18);
+      --r-md:10px; --r-lg:14px; --accent:#E24B4A;
     }
     @media (prefers-color-scheme: dark) {
       :root {
         --bg:#1c1c1e; --bg2:#2c2c2e; --bg3:#3a3a3c;
         --text:#f2f2f7; --text2:#aeaeb2;
-        --bd:rgba(255,255,255,0.1); --bd2:rgba(255,255,255,0.2);
+        --bd:rgba(255,255,255,0.10); --bd2:rgba(255,255,255,0.18);
       }
     }
-    html, body { min-height:100%; background:var(--bg3); color:var(--text);
+    html, body {
+      min-height:100%; background:var(--bg3); color:var(--text);
       font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR','Malgun Gothic',sans-serif;
-      -webkit-font-smoothing:antialiased; }
-
-    #app { max-width:860px; margin:0 auto; padding:1.2rem 1rem 3rem; }
+      -webkit-font-smoothing:antialiased;
+    }
+    #app { max-width:480px; margin:0 auto; padding:1.2rem 1rem 3rem; }
 
     /* ── 헤더 ── */
-    .header { text-align:center; margin-bottom:1.4rem; }
-    .header h1 { font-size:20px; font-weight:700; letter-spacing:-.3px; }
+    .header { text-align:center; margin-bottom:1rem; }
+    .header h1 { font-size:19px; font-weight:700; letter-spacing:-.3px; }
     .header p  { font-size:12px; color:var(--text2); margin-top:3px; }
 
-    /* ── 필터 ── */
-    .filter-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:1.2rem; align-items:center; }
-    .filter-btn {
-      font-size:12px; padding:5px 13px; border-radius:20px; cursor:pointer;
-      border:0.5px solid var(--bd2); background:var(--bg); color:var(--text2);
-      transition:background .15s,color .15s; -webkit-tap-highlight-color:transparent;
-    }
-    .filter-btn.active { background:var(--text); color:var(--bg); border-color:var(--text); font-weight:600; }
-
-    /* ── 메인 레이아웃 ── */
-    .main-layout { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; }
-    @media(max-width:580px){ .main-layout{grid-template-columns:1fr;} }
-
-    /* ── 제비뽑기 통 ── */
-    .lottery-section { display:flex; flex-direction:column; align-items:center; gap:12px; }
-
-    .jar-wrap {
-      position:relative; width:100%; max-width:260px;
-      cursor:pointer; -webkit-tap-highlight-color:transparent;
-      user-select:none;
-    }
-    .jar-wrap svg { width:100%; height:auto; display:block; }
-
-    /* 제비 종이들 */
-    .slip { transition: transform .3s, opacity .3s; }
-    .slip.out { animation: flyOut .5s ease-in forwards; }
-    @keyframes flyOut {
-      0%   { transform: translateY(0) rotate(0deg); opacity:1; }
-      100% { transform: translateY(-120px) rotate(25deg); opacity:0; }
-    }
-
-    /* 흔들기 애니메이션 */
-    .jar-wrap.shaking { animation: shake .5s ease; }
-    @keyframes shake {
-      0%,100%{transform:rotate(0)}
-      15%{transform:rotate(-8deg)}
-      30%{transform:rotate(8deg)}
-      45%{transform:rotate(-6deg)}
-      60%{transform:rotate(6deg)}
-      75%{transform:rotate(-3deg)}
-      90%{transform:rotate(3deg)}
-    }
-
-    #draw-btn {
-      width:100%; max-width:260px; padding:12px;
-      font-size:15px; font-weight:700; cursor:pointer;
-      border-radius:var(--r-md); border:none;
-      background:var(--accent); color:#fff;
-      letter-spacing:.5px;
-      transition:opacity .15s, transform .1s;
-      -webkit-tap-highlight-color:transparent;
-    }
-    #draw-btn:hover  { opacity:.88; }
-    #draw-btn:active { transform:scale(.97); }
-    #draw-btn:disabled { background:var(--bg3); color:var(--text2); cursor:not-allowed; transform:none; }
-
-    /* ── 결과 ── */
-    .results-section { display:flex; flex-direction:column; gap:9px; }
-    .empty-state {
-      font-size:13px; color:var(--text2); text-align:center;
-      padding:2.5rem 1rem; border:0.5px dashed var(--bd2);
-      border-radius:var(--r-lg); line-height:2;
-    }
-    .result-card {
-      background:var(--bg); border:0.5px solid var(--bd);
-      border-radius:var(--r-lg); padding:11px 14px;
-    }
-    .result-card.rank-1 { border:2px solid #E24B4A; }
-    .result-card.rank-2 { border:1.5px solid #BA7517; }
-    .result-card.rank-3 { border:1px solid #185FA5; }
-
-    .rank-badge {
-      display:inline-block; font-size:10px; font-weight:700;
-      padding:2px 8px; border-radius:20px; margin-bottom:5px;
-    }
-    .rank-1 .rank-badge { background:#FCEBEB; color:#A32D2D; }
-    .rank-2 .rank-badge { background:#FAEEDA; color:#854F0B; }
-    .rank-3 .rank-badge { background:#E6F1FB; color:#0C447C; }
-
-    .restaurant-name { font-size:15px; font-weight:600; color:var(--text); }
-    .restaurant-meta { font-size:11px; color:var(--text2); margin-top:4px; display:flex; flex-wrap:wrap; gap:4px; }
-    .tag { font-size:11px; padding:2px 7px; border-radius:4px; background:var(--bg2); color:var(--text2); }
-    .menu-text { font-size:12px; color:var(--text2); margin-top:4px; }
-
-    .eat-btn {
-      margin-top:8px; padding:5px 12px; font-size:12px; font-weight:600;
-      border-radius:20px; cursor:pointer; border:1px solid var(--accent);
-      background:transparent; color:var(--accent);
-      transition:background .15s, color .15s;
-      -webkit-tap-highlight-color:transparent;
-    }
-    .eat-btn:hover { background:var(--accent); color:#fff; }
-    .eat-btn.eaten { background:var(--bg2); color:var(--text2); border-color:var(--bd2); cursor:default; }
-
     /* ── 주간 기록 ── */
-    .week-section { margin-top:1.4rem; }
+    .week-section { margin-bottom:1.2rem; }
     .week-title {
-      font-size:13px; font-weight:600; color:var(--text2);
-      text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px;
+      font-size:12px; font-weight:600; color:var(--text2);
+      letter-spacing:.4px; margin-bottom:7px;
       display:flex; align-items:center; justify-content:space-between;
     }
     .week-reset {
@@ -140,46 +47,130 @@
       border:0.5px solid var(--bd2); background:transparent; color:var(--text2);
       -webkit-tap-highlight-color:transparent;
     }
-    .week-reset:hover { color:var(--accent); border-color:var(--accent); }
-
-    .week-grid {
-      display:grid; grid-template-columns:repeat(5,1fr); gap:6px;
-    }
+    .week-reset:active { color:var(--accent); border-color:var(--accent); }
+    .week-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; }
     .day-card {
-      background:var(--bg2); border-radius:var(--r-md);
-      border:0.5px solid var(--bd); padding:8px 6px; min-height:72px;
+      background:var(--bg); border-radius:var(--r-md);
+      border:0.5px solid var(--bd); padding:7px 5px; min-height:64px;
     }
-    .day-label {
-      font-size:10px; font-weight:700; color:var(--text2);
-      text-align:center; margin-bottom:5px; letter-spacing:.3px;
-    }
+    .today-mark { border-color:var(--accent); }
+    .today-mark .day-label { color:var(--accent); }
+    .day-label { font-size:10px; font-weight:700; color:var(--text2); text-align:center; margin-bottom:4px; }
     .day-meals { display:flex; flex-direction:column; gap:3px; }
     .meal-chip {
-      font-size:10px; padding:2px 5px; border-radius:4px;
-      background:var(--bg3); color:var(--text2);
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      font-size:9px; padding:2px 4px; border-radius:4px;
+      background:var(--bg2); color:var(--text2);
       display:flex; align-items:center; justify-content:space-between; gap:2px;
     }
     .meal-chip span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .meal-del {
-      flex-shrink:0; font-size:10px; cursor:pointer; color:var(--text2);
-      line-height:1; padding:0 1px;
-    }
-    .meal-del:hover { color:var(--accent); }
+    .meal-del { flex-shrink:0; cursor:pointer; color:var(--text2); font-size:9px; padding:0 1px; }
+    .meal-del:active { color:var(--accent); }
 
-    .today-mark .day-label { color:var(--accent); }
-    .today-mark { border-color:var(--accent); }
+    /* ── 필터 ── */
+    .filter-row {
+      display:flex; gap:6px; flex-wrap:nowrap; overflow-x:auto;
+      margin-bottom:1.1rem; padding-bottom:2px;
+      -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    }
+    .filter-row::-webkit-scrollbar { display:none; }
+    .filter-btn {
+      flex-shrink:0; font-size:12px; padding:6px 14px; border-radius:20px; cursor:pointer;
+      border:0.5px solid var(--bd2); background:var(--bg); color:var(--text2);
+      transition:background .15s,color .15s; -webkit-tap-highlight-color:transparent;
+    }
+    .filter-btn.active {
+      background:var(--text); color:var(--bg);
+      border-color:var(--text); font-weight:600;
+    }
+
+    /* ── 제비뽑기 통 ── */
+    .lottery-section { display:flex; flex-direction:column; align-items:center; gap:12px; margin-bottom:1.2rem; }
+    .jar-wrap {
+      width:60%; max-width:200px; cursor:pointer;
+      -webkit-tap-highlight-color:transparent; user-select:none;
+    }
+    .jar-wrap svg { width:100%; height:auto; display:block; }
+    .jar-wrap.shaking { animation:shake .55s ease; }
+    @keyframes shake {
+      0%,100%{transform:rotate(0) translateX(0)}
+      10%{transform:rotate(-7deg) translateX(-4px)}
+      25%{transform:rotate(7deg) translateX(4px)}
+      40%{transform:rotate(-5deg) translateX(-3px)}
+      55%{transform:rotate(5deg) translateX(3px)}
+      70%{transform:rotate(-3deg) translateX(-2px)}
+      85%{transform:rotate(3deg) translateX(2px)}
+    }
+    #draw-btn {
+      width:80%; max-width:240px; padding:13px;
+      font-size:16px; font-weight:700; cursor:pointer;
+      border-radius:var(--r-md); border:none;
+      background:var(--accent); color:#fff; letter-spacing:.5px;
+      transition:opacity .15s,transform .1s; -webkit-tap-highlight-color:transparent;
+    }
+    #draw-btn:active { transform:scale(.97); opacity:.88; }
+    #draw-btn:disabled { background:var(--bg3); color:var(--text2); cursor:not-allowed; transform:none; }
+
+    /* ── 결과 ── */
+    .results-section { display:flex; flex-direction:column; gap:8px; }
+    .empty-state {
+      font-size:13px; color:var(--text2); text-align:center;
+      padding:2rem 1rem; border:0.5px dashed var(--bd2);
+      border-radius:var(--r-lg); line-height:2;
+    }
+    .result-card {
+      background:var(--bg); border:0.5px solid var(--bd);
+      border-radius:var(--r-lg); padding:12px 14px;
+    }
+    .result-card.rank-1 { border:2px solid #E24B4A; }
+    .result-card.rank-2 { border:1.5px solid #BA7517; }
+    .result-card.rank-3 { border:1px solid #185FA5; }
+    .rank-badge {
+      display:inline-block; font-size:10px; font-weight:700;
+      padding:2px 8px; border-radius:20px; margin-bottom:5px;
+    }
+    .rank-1 .rank-badge { background:#FCEBEB; color:#A32D2D; }
+    .rank-2 .rank-badge { background:#FAEEDA; color:#854F0B; }
+    .rank-3 .rank-badge { background:#E6F1FB; color:#0C447C; }
+    .restaurant-name { font-size:16px; font-weight:600; color:var(--text); }
+    .restaurant-meta { font-size:11px; color:var(--text2); margin-top:4px; display:flex; flex-wrap:wrap; gap:4px; }
+    .tag { font-size:11px; padding:2px 7px; border-radius:4px; background:var(--bg2); color:var(--text2); }
+    .menu-text { font-size:12px; color:var(--text2); margin-top:4px; }
+    .eat-btn {
+      margin-top:9px; width:100%; padding:9px;
+      font-size:13px; font-weight:600;
+      border-radius:var(--r-md); cursor:pointer;
+      border:1.5px solid var(--accent);
+      background:transparent; color:var(--accent);
+      transition:background .15s,color .15s; -webkit-tap-highlight-color:transparent;
+    }
+    .eat-btn:active { background:var(--accent); color:#fff; }
+    .eat-btn.eaten {
+      background:var(--bg2); color:var(--text2);
+      border-color:var(--bd2); cursor:default;
+    }
 
     footer { text-align:center; margin-top:2rem; font-size:11px; color:var(--text2); }
   </style>
 </head>
 <body>
 <div id="app">
+
+  <!-- 헤더 -->
   <div class="header">
     <h1>🎋 마린시티 식당 제비뽑기</h1>
     <p>이번 주 메뉴와 겹치지 않게 · 3순위까지 추천</p>
   </div>
 
+  <!-- 주간 기록 -->
+  <div class="week-section">
+    <div class="week-title">
+      <span>이번 주 식사 기록</span>
+      <button class="week-reset" onclick="resetWeek()">초기화</button>
+    </div>
+    <div class="week-grid" id="week-grid"></div>
+  </div>
+
+  <!-- 필터 -->
   <div class="filter-row">
     <button class="filter-btn active" data-filter="전체"   onclick="setFilter(this)">전체</button>
     <button class="filter-btn" data-filter="한식"   onclick="setFilter(this)">한식</button>
@@ -188,57 +179,37 @@
     <button class="filter-btn" data-filter="아시아" onclick="setFilter(this)">아시아</button>
   </div>
 
-  <div class="main-layout">
-    <!-- 왼쪽: 제비뽑기 통 -->
-    <div class="lottery-section">
-      <div class="jar-wrap" id="jar" onclick="draw()">
-        <svg viewBox="0 0 220 260" xmlns="http://www.w3.org/2000/svg">
-          <!-- 제비 종이들 (통 안) -->
-          <g id="slips"></g>
-          <!-- 통 몸통 -->
-          <ellipse cx="110" cy="210" rx="72" ry="16" fill="#c8a96e" opacity=".5"/>
-          <path d="M38 120 Q32 210 38 228 Q110 248 182 228 Q188 210 182 120 Z"
-                fill="#e8c98a" stroke="#c8a96e" stroke-width="1.5"/>
-          <!-- 통 무늬 -->
-          <path d="M50 148 Q110 158 170 148" fill="none" stroke="#c8a96e" stroke-width="1" opacity=".6"/>
-          <path d="M44 178 Q110 190 176 178" fill="none" stroke="#c8a96e" stroke-width="1" opacity=".6"/>
-          <!-- 통 입구 타원 -->
-          <ellipse cx="110" cy="120" rx="72" ry="18" fill="#f0daa0" stroke="#c8a96e" stroke-width="1.5"/>
-          <!-- 손잡이 막대 -->
-          <rect x="88" y="60" width="8" height="64" rx="4" fill="#a0784a"/>
-          <rect x="124" y="60" width="8" height="64" rx="4" fill="#a0784a"/>
-          <rect x="82" y="54" width="56" height="12" rx="6" fill="#c8a96e" stroke="#a0784a" stroke-width="1"/>
-          <!-- 통 광택 -->
-          <path d="M55 130 Q70 120 85 126" fill="none" stroke="#fff" stroke-width="2" opacity=".4"/>
-          <!-- 흔들기 힌트 텍스트 -->
-          <text x="110" y="196" text-anchor="middle" font-size="11"
-                font-family="-apple-system,sans-serif" fill="#a0784a" opacity=".8">통을 흔들어!</text>
-        </svg>
-      </div>
-
-      <button id="draw-btn" onclick="draw()">🎋 제비 뽑기!</button>
+  <!-- 제비뽑기 -->
+  <div class="lottery-section">
+    <div class="jar-wrap" id="jar" onclick="draw()">
+      <svg viewBox="0 0 220 260" xmlns="http://www.w3.org/2000/svg">
+        <g id="slips"></g>
+        <ellipse cx="110" cy="210" rx="72" ry="16" fill="#c8a96e" opacity=".4"/>
+        <path d="M38 120 Q32 210 38 228 Q110 248 182 228 Q188 210 182 120 Z"
+              fill="#e8c98a" stroke="#c8a96e" stroke-width="1.5"/>
+        <path d="M50 148 Q110 158 170 148" fill="none" stroke="#c8a96e" stroke-width="1" opacity=".6"/>
+        <path d="M44 178 Q110 190 176 178" fill="none" stroke="#c8a96e" stroke-width="1" opacity=".6"/>
+        <ellipse cx="110" cy="120" rx="72" ry="18" fill="#f0daa0" stroke="#c8a96e" stroke-width="1.5"/>
+        <rect x="88" y="60" width="8" height="64" rx="4" fill="#a0784a"/>
+        <rect x="124" y="60" width="8" height="64" rx="4" fill="#a0784a"/>
+        <rect x="82" y="54" width="56" height="12" rx="6" fill="#c8a96e" stroke="#a0784a" stroke-width="1"/>
+        <path d="M55 130 Q70 120 85 126" fill="none" stroke="#fff" stroke-width="2" opacity=".35"/>
+        <text x="110" y="196" text-anchor="middle" font-size="11"
+              font-family="-apple-system,sans-serif" fill="#a0784a" opacity=".8">통을 흔들어!</text>
+      </svg>
     </div>
-
-    <!-- 오른쪽: 결과 -->
-    <div class="results-section" id="results">
-      <div class="empty-state">통을 흔들거나<br>제비 뽑기 버튼을 눌러보세요! 🎋</div>
-    </div>
+    <button id="draw-btn" onclick="draw()">🎋 제비 뽑기!</button>
   </div>
 
-  <!-- 주간 기록 -->
-  <div class="week-section">
-    <div class="week-title">
-      <span>이번 주 식사 기록</span>
-      <button class="week-reset" onclick="resetWeek()">주간 초기화</button>
-    </div>
-    <div class="week-grid" id="week-grid"></div>
+  <!-- 결과 -->
+  <div class="results-section" id="results">
+    <div class="empty-state">통을 흔들거나<br>제비 뽑기 버튼을 눌러보세요! 🎋</div>
   </div>
 
-  <footer>마린시티 식당리스트 기준 · 가격 단위: 만원</footer>
+  <footer>마린시티 식당리스트 · <span id="ver">__VERSION__</span></footer>
 </div>
 
 <script>
-// ── 데이터 ──────────────────────────────────────
 const RESTAURANTS = [
   {name:"창가자미",          loc:"골든머르시아",       type:"한식",   menu:"미역국, 물회",           price:2.0},
   {name:"해윤대대박",        loc:"골든머르시아",       type:"한식",   menu:"곰탕, 해장국",           price:1.6},
@@ -291,16 +262,14 @@ const RESTAURANTS = [
   {name:"치즈치즈치즈",      loc:"현대카멜리아",       type:"양식",   menu:"파스타, 뇨끼 등",        price:1.5},
 ];
 
-const DAYS   = ["월","화","수","목","금"];
-const KEY    = "marinLottery_v3";
-const COLORS_SLIP = ["#E24B4A","#378ADD","#1D9E75","#BA7517","#7F77DD","#D4537E","#D85A30","#639922"];
+const DAYS = ["월","화","수","목","금"];
+const KEY  = "marinLottery_v3";
+const SLIP_COLORS = ["#E24B4A","#7F77DD","#1D9E75","#BA7517","#378ADD","#D4537E","#D85A30","#639922"];
 
-// ── 상태 ────────────────────────────────────────
 let curFilter = "전체";
 let drawing   = false;
 let weekData  = {week:"", days:{월:[],화:[],수:[],목:[],금:[]}};
 
-// ── 초기화 ──────────────────────────────────────
 (function init(){
   try {
     const raw = localStorage.getItem(KEY);
@@ -308,69 +277,54 @@ let weekData  = {week:"", days:{월:[],화:[],수:[],목:[],금:[]}};
       const saved = JSON.parse(raw);
       if(saved.week === getWeekKey()) weekData = saved;
       else weekData.week = getWeekKey();
-    } else {
-      weekData.week = getWeekKey();
-    }
+    } else { weekData.week = getWeekKey(); }
   } catch(e){ weekData.week = getWeekKey(); }
   renderWeek();
   renderSlips();
 })();
 
 function getWeekKey(){
-  const d = new Date();
-  const day = d.getDay();
+  const d = new Date(), day = d.getDay();
   const mon = new Date(d);
-  mon.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+  mon.setDate(d.getDate() - (day===0?6:day-1));
   return mon.toISOString().slice(0,10);
 }
-
 function getToday(){
-  const map = {1:"월",2:"화",3:"수",4:"목",5:"금"};
-  return map[new Date().getDay()] || null;
+  return {1:"월",2:"화",3:"수",4:"목",5:"금"}[new Date().getDay()] || null;
 }
-
 function getUsedNames(){
-  return Object.values(weekData.days).flat().map(m => m.name);
+  return Object.values(weekData.days).flat().map(m=>m.name);
 }
-
-// ── 필터 ────────────────────────────────────────
 function setFilter(btn){
   document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
   curFilter = btn.dataset.filter;
   renderSlips();
 }
-
 function getPool(){
   const used = getUsedNames();
-  let pool = RESTAURANTS.filter(r => !used.includes(r.name));
-  if(curFilter !== "전체") pool = pool.filter(r => r.type === curFilter);
+  let pool = RESTAURANTS.filter(r=>!used.includes(r.name));
+  if(curFilter!=="전체") pool = pool.filter(r=>r.type===curFilter);
   return pool;
 }
-
-// ── 제비 그리기 (통 안) ─────────────────────────
 function renderSlips(){
-  const pool = getPool();
+  const pool  = getPool();
   const count = Math.min(pool.length, 14);
-  const g = document.getElementById("slips");
+  const g     = document.getElementById("slips");
   g.innerHTML = "";
-  for(let i = 0; i < count; i++){
-    const x = 55 + Math.random() * 100;
-    const y = 90 + Math.random() * 40;
-    const rot = -30 + Math.random() * 60;
-    const col = COLORS_SLIP[i % COLORS_SLIP.length];
-    const h = 28 + Math.random() * 14;
+  for(let i=0; i<count; i++){
+    const x   = 55 + Math.random()*100;
+    const y   = 88 + Math.random()*38;
+    const rot = -35 + Math.random()*70;
+    const col = SLIP_COLORS[i % SLIP_COLORS.length];
+    const h   = 26 + Math.random()*14;
     g.innerHTML += `
-      <g transform="translate(${x},${y}) rotate(${rot})" class="slip">
-        <rect x="-5" y="${-h}" width="10" height="${h}" rx="2"
-              fill="${col}" opacity="0.82"/>
-        <line x1="-3" y1="${-h+5}" x2="3" y2="${-h+5}"
-              stroke="#fff" stroke-width="0.8" opacity=".5"/>
+      <g transform="translate(${x},${y}) rotate(${rot})">
+        <rect x="-5" y="${-h}" width="10" height="${h}" rx="2" fill="${col}" opacity="0.85"/>
+        <line x1="-3" y1="${-h+5}" x2="3" y2="${-h+5}" stroke="#fff" stroke-width="0.8" opacity=".5"/>
       </g>`;
   }
 }
-
-// ── 제비뽑기 ────────────────────────────────────
 function draw(){
   if(drawing) return;
   const pool = getPool();
@@ -378,35 +332,25 @@ function draw(){
     alert("남은 식당이 3개 미만입니다.\n주간 기록을 초기화하거나 다른 카테고리를 선택해주세요.");
     return;
   }
-
   drawing = true;
   document.getElementById("draw-btn").disabled = true;
-
-  // 흔들기
   const jar = document.getElementById("jar");
   jar.classList.add("shaking");
-
   setTimeout(()=>{
     jar.classList.remove("shaking");
-
-    // 결과 뽑기
     const shuffled = [...pool].sort(()=>Math.random()-.5);
-    const picked   = shuffled.slice(0, 3);
-
     renderSlips();
-    renderResults(picked);
-
+    renderResults(shuffled.slice(0,3));
     drawing = false;
     document.getElementById("draw-btn").disabled = false;
+    // 결과 영역으로 스크롤
+    document.getElementById("results").scrollIntoView({behavior:"smooth", block:"start"});
   }, 600);
 }
-
-// ── 결과 렌더링 ──────────────────────────────────
 function renderResults(picked){
   const labels  = ["🥇 1순위","🥈 2순위","🥉 3순위"];
   const classes = ["rank-1","rank-2","rank-3"];
   const today   = getToday();
-
   document.getElementById("results").innerHTML = picked.map((r,i)=>`
     <div class="result-card ${classes[i]}" id="card-${i}">
       <span class="rank-badge">${labels[i]}</span>
@@ -418,73 +362,47 @@ function renderResults(picked){
       </div>
       <div class="menu-text">${r.menu}</div>
       ${today
-        ? `<button class="eat-btn" onclick="markEaten('${r.name}','${r.menu}',${i})">
-             ✅ 오늘(${today}) 먹었어요!
-           </button>`
-        : `<div style="font-size:11px;color:var(--text2);margin-top:6px;">주말은 기록 없음</div>`
-      }
-    </div>
-  `).join("");
+        ? `<button class="eat-btn" onclick="markEaten('${r.name}','${r.menu}',${i})">✅ 오늘(${today}요일) 먹었어요!</button>`
+        : `<div style="font-size:11px;color:var(--text2);margin-top:6px;">주말은 기록 없음</div>`}
+    </div>`).join("");
 }
-
-// ── 먹은 것 기록 ────────────────────────────────
 function markEaten(name, menu, cardIdx){
   const today = getToday();
   if(!today) return;
-
-  // 이미 오늘 기록에 있으면 pass
-  if(weekData.days[today].find(m=>m.name===name)){
-    alert("이미 오늘 기록에 있어요!");
-    return;
-  }
-
+  if(weekData.days[today].find(m=>m.name===name)){ alert("이미 오늘 기록에 있어요!"); return; }
   weekData.days[today].push({name, menu});
-  saveData();
-  renderWeek();
-  renderSlips();
-
-  // 버튼 → 완료 표시
+  saveData(); renderWeek(); renderSlips();
   const btn = document.querySelector(`#card-${cardIdx} .eat-btn`);
-  if(btn){ btn.textContent = "✔ 기록 완료!"; btn.classList.add("eaten"); btn.disabled = true; }
+  if(btn){ btn.textContent="✔ 기록 완료!"; btn.classList.add("eaten"); btn.disabled=true; }
 }
-
-// ── 주간 기록 렌더링 ─────────────────────────────
 function renderWeek(){
   const today = getToday();
-  const grid  = document.getElementById("week-grid");
-  grid.innerHTML = DAYS.map(day=>{
-    const meals  = weekData.days[day] || [];
-    const isToday = day === today;
-    const chips  = meals.map((m,i)=>`
+  document.getElementById("week-grid").innerHTML = DAYS.map(day=>{
+    const meals   = weekData.days[day]||[];
+    const isToday = day===today;
+    const chips   = meals.map((m,i)=>`
       <div class="meal-chip">
         <span title="${m.name}">${m.name}</span>
-        <span class="meal-del" onclick="deleteMeal('${day}',${i})" title="삭제">✕</span>
+        <span class="meal-del" onclick="deleteMeal('${day}',${i})">✕</span>
       </div>`).join("");
     return `
       <div class="day-card ${isToday?"today-mark":""}">
         <div class="day-label">${day}요일</div>
-        <div class="day-meals">${chips || '<span style="font-size:10px;color:var(--text2);opacity:.5;">없음</span>'}</div>
+        <div class="day-meals">${chips||'<span style="font-size:9px;color:var(--text2);opacity:.4;">없음</span>'}</div>
       </div>`;
   }).join("");
 }
-
 function deleteMeal(day, idx){
   weekData.days[day].splice(idx,1);
-  saveData();
-  renderWeek();
-  renderSlips();
+  saveData(); renderWeek(); renderSlips();
 }
-
 function resetWeek(){
   if(!confirm("이번 주 기록을 전부 초기화할까요?")) return;
-  weekData.days = {월:[],화:[],수:[],목:[],금:[]};
-  saveData();
-  renderWeek();
-  renderSlips();
-  document.getElementById("results").innerHTML =
+  weekData.days={월:[],화:[],수:[],목:[],금:[]};
+  saveData(); renderWeek(); renderSlips();
+  document.getElementById("results").innerHTML=
     '<div class="empty-state">통을 흔들거나<br>제비 뽑기 버튼을 눌러보세요! 🎋</div>';
 }
-
 function saveData(){
   localStorage.setItem(KEY, JSON.stringify(weekData));
 }
